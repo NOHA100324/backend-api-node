@@ -45,7 +45,13 @@ Antes de comenzar, asegúrate de tener instalado:
    cp .env.example .env
    ```
 
-4. **Ejecutar la aplicación:**
+4. **Crear base de datos y tablas automáticamente:**
+   Ejecuta el siguiente comando para crear la base de datos y las tablas necesarias:
+   ```bash
+   npm run init-db
+   ```
+
+5. **Ejecutar la aplicación:**
    - Modo producción: `npm start`
    - Modo desarrollo (con autorecarga): `npm run dev`
 
