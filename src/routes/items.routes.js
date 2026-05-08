@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const itemsController = require('../controllers/items.controller');
-const verifyToken = require('../middlewares/auth.middleware');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 // Todas las rutas de items requieren autenticación
-router.use(verifyToken);
+router.use(authMiddleware.verifyToken);
 
 router.get('/', itemsController.getAll);
 router.get('/:id', itemsController.getById);

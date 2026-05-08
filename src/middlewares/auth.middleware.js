@@ -1,20 +1,24 @@
 const jwt = require('jsonwebtoken');
 
-const verifyToken = (req, res, next) => {
+exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) {
-    return res.status(403).json({ error: 'Se requiere un token para la autenticación' });
-  }
+  if (!token) return res.status(401).json({ message: 'No autorizado' });
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_key_2024');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_key');
     req.user = decoded;
     next();
-  } catch (err) {
-    return res.status(401).json({ error: 'Token inválido o expirado' });
+  } catch {
+    res.status(401).json({ message: 'Token inválido' });
   }
 };
 
-module.exports = verifyToken;
+exports.isAdmin = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
+    next();
+  } else {
+    res.status(403).json({ message: 'Se requieren permisos de administrador' });
+  }
+};

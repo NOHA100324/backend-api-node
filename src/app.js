@@ -1,10 +1,7 @@
-const express = require('express');
-const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
-
-const authRoutes = require('./routes/auth.routes');
-const itemsRoutes = require('./routes/items.routes');
+const express = require('express');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,23 +9,32 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 app.use(cors());
 app.use(express.json());
-
-// Servir archivos estáticos del Frontend (React)
-app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Rutas de la API
+const authRoutes = require('./routes/auth.routes');
+const itemsRoutes = require('./routes/items.routes');
+const salesRoutes = require('./routes/sales.routes');
+const userRoutes = require('./routes/user.routes');
+
 app.use('/api/auth', authRoutes);
 app.use('/api/items', itemsRoutes);
+app.use('/api/sales', salesRoutes);
+app.use('/api/users', userRoutes);
 
-// Ruta de prueba de la API (opcional, ahora es secundaria)
+// Ruta de prueba de la API
 app.get('/api/health', (req, res) => {
   res.json({ status: "ok", message: "API funcionando" });
 });
 
-// IMPORTANTE: Manejo de rutas de React (SPA)
-// Cualquier ruta que no sea de la API o un archivo estático, devolverá el index.html
+// Ruta base para servir el frontend
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
+// Manejo de rutas no encontradas (404)
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
+  res.status(404).json({ message: "Ruta no encontrada" });
 });
 
 // Manejo de errores global
@@ -38,5 +44,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`✅ Servidor profesional corriendo en: http://localhost:${PORT}`);
 });
